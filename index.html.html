@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>BloomFit – Your Weight Loss Journey</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --rose:#E8557A;--rose-light:#FF7FA0;--rose-pale:#FFF0F4;
+  --coral:#F4845F;--amber:#F5A623;--teal:#3BBFB8;--teal-pale:#E8FAFA;
+  --lavender:#9B8EC4;--lavender-pale:#F2F0FF;--mint:#52C98A;--mint-pale:#EDFFF5;
+  --text:#1C1124;--text-mid:#5A3F6B;--text-soft:#9B87A8;
+  --bg:#FDF8FA;--card:#FFFFFF;--border:#F2E8EE;--nav-h:68px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'DM Sans',sans-serif;background:#1a0a22;color:var(--text);display:flex;flex-direction:column;align-items:center;}
+#root{width:100%;max-width:430px;height:100%;display:flex;flex-direction:column;background:var(--bg);box-shadow:0 0 100px rgba(232,85,122,0.25);}
+#content{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:calc(var(--nav-h)+16px);scroll-behavior:smooth;}
+#content::-webkit-scrollbar{display:none;}
+
+/* HEADER */
+.app-header{background:linear-gradient(150deg,#E8557A 0%,#C03060 55%,#9B3080 100%);padding:26px 20px 20px;position:relative;overflow:hidden;flex-shrink:0;}
+.app-header::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.07);}
+.app-header::after{content:'';position:absolute;bottom:-25px;left:-15px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.05);}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1;}
+.header-greeting{font-size:12px;color:rgba(255,255,255,0.75);letter-spacing:.5px;margin-bottom:3px;}
+.header-title{font-family:'Cormorant Garamond',serif;font-size:28px;color:#fff;font-weight:700;line-height:1.1;}
+.header-streak{font-size:12px;color:rgba(255,255,255,0.85);margin-top:4px;}
+.header-avatar{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:24px;border:2px solid rgba(255,255,255,0.3);}
+.header-stats{display:flex;gap:7px;margin-top:14px;position:relative;z-index:1;}
+.hstat{flex:1;background:rgba(255,255,255,0.14);border-radius:13px;padding:9px 5px;text-align:center;backdrop-filter:blur(6px);}
+.hstat-val{font-family:'Cormorant Garamond',serif;font-size:19px;color:#fff;font-weight:700;line-height:1;}
+.hstat-label{font-size:9px;color:rgba(255,255,255,0.75);margin-top:2px;}
+
+/* NAV */
+.bottom-nav{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--border);display:flex;height:var(--nav-h);z-index:100;flex-shrink:0;box-shadow:0 -4px 20px rgba(232,85,122,0.08);overflow-x:auto;}
+.bottom-nav::-webkit-scrollbar{display:none;}
+.nav-btn{min-width:52px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;border:none;background:transparent;transition:background .15s;padding:6px 4px;}
+.nav-btn.active{background:var(--rose-pale);}
+.nav-icon{font-size:20px;line-height:1;}
+.nav-label{font-size:9px;font-weight:600;color:var(--text-soft);letter-spacing:.2px;}
+.nav-btn.active .nav-label{color:var(--rose);}
+
+/* PAGES */
+.page{padding:18px 15px;display:none;}
+.page.active{display:block;}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:23px;color:var(--text);font-weight:700;margin-bottom:2px;}
+.section-sub{font-size:12px;color:var(--text-soft);margin-bottom:16px;}
+
+/* CARDS */
+.card{background:var(--card);border-radius:20px;box-shadow:0 3px 18px rgba(28,17,36,0.06);padding:17px;}
+
+/* BUTTONS */
+.btn{border:none;border-radius:50px;padding:11px 24px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;cursor:pointer;transition:transform .15s,box-shadow .15s;display:inline-flex;align-items:center;gap:6px;}
+.btn-rose{background:linear-gradient(135deg,var(--rose-light),var(--rose));color:#fff;box-shadow:0 4px 14px rgba(232,85,122,0.32);}
+.btn-rose:hover{transform:translateY(-2px);box-shadow:0 7px 20px rgba(232,85,122,0.42);}
+.btn-teal{background:linear-gradient(135deg,#52DED6,var(--teal));color:#fff;box-shadow:0 4px 14px rgba(59,191,184,0.32);}
+.btn-purple{background:linear-gradient(135deg,#B89EE8,var(--lavender));color:#fff;box-shadow:0 4px 14px rgba(155,142,196,0.32);}
+.btn-outline{background:transparent;color:var(--rose);border:2px solid var(--rose);padding:9px 20px;}
+.btn-outline:hover{background:var(--rose-pale);}
+.btn-sm{padding:7px 14px;font-size:12px;}
+.fw{width:100%;justify-content:center;}
+
+/* BADGES */
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:600;}
+.badge-rose{background:var(--rose-pale);color:var(--rose);}
+.badge-teal{background:var(--teal-pale);color:var(--teal);}
+.badge-amber{background:#FFF5E0;color:#C07A00;}
+.badge-mint{background:var(--mint-pale);color:#2A8A5A;}
+.badge-lav{background:var(--lavender-pale);color:var(--lavender);}
+
+/* PROGRESS BAR */
+.pbar-bg{background:var(--border);border-radius:20px;overflow:hidden;}
+.pbar{border-radius:20px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+
+/* WORKOUT GRID */
+.workout-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:12px;}
+.wcat-card{border-radius:18px;padding:16px 13px;cursor:pointer;transition:transform .18s,box-shadow .18s;border:1.5px solid transparent;}
+.wcat-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,0.1);}
+.wcat-icon{font-size:34px;margin-bottom:9px;display:block;}
+.wcat-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;color:var(--text);}
+.wcat-count{font-size:11px;color:var(--text-soft);margin-top:2px;}
+
+/* SESSION ROW */
+.session-row{display:flex;align-items:center;gap:11px;padding:13px;border-radius:15px;background:#FAFAFA;margin-bottom:9px;cursor:pointer;transition:background .15s;}
+.session-row:hover{background:var(--rose-pale);}
+.session-ico{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.session-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;}
+
+/* VIDEO PLAYER */
+.video-modal{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:0;}
+.video-modal-inner{width:100%;max-width:430px;height:100%;display:flex;flex-direction:column;background:#0d0d0d;}
+.video-top-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#0d0d0d;flex-shrink:0;}
+.video-close-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.12);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.video-title-bar{font-family:'Cormorant Garamond',serif;font-size:17px;color:#fff;font-weight:700;flex:1;padding:0 12px;}
+.yt-frame-wrap{width:100%;position:relative;padding-top:56.25%;background:#111;flex-shrink:0;}
+.yt-frame-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
+.video-info-scroll{flex:1;overflow-y:auto;padding:16px;}
+.video-info-scroll::-webkit-scrollbar{display:none;}
+.video-session-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.video-desc{font-size:13px;color:#ccc;line-height:1.6;margin-bottom:16px;}
+.video-steps{background:#1a1a1a;border-radius:14px;padding:14px;margin-bottom:14px;}
+.video-steps-title{font-family:'Cormorant Garamond',serif;font-size:16px;color:#fff;margin-bottom:10px;}
+.video-step{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid #2a2a2a;font-size:12px;color:#ccc;line-height:1.5;}
+.video-step:last-child{border-bottom:none;}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--rose);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;}
+.timer-section{background:#1a1a1a;border-radius:14px;padding:14px;margin-bottom:14px;}
+.timer-ring{width:160px;height:160px;border-radius:50%;margin:0 auto 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:4px solid var(--rose);background:radial-gradient(circle,rgba(232,85,122,0.08),transparent);}
+.timer-time{font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:700;color:var(--rose);line-height:1;}
+.timer-label{font-size:11px;color:#999;margin-top:3px;}
+.timer-btns{display:flex;gap:10px;justify-content:center;}
+.complete-banner{background:linear-gradient(135deg,#52C98A,#38A870);border-radius:14px;padding:16px;text-align:center;color:#fff;margin-top:12px;}
+
+/* WATER */
+.water-hero{background:linear-gradient(135deg,#3BBFB8,#2A9A94);border-radius:22px;padding:24px;text-align:center;color:#fff;margin-bottom:16px;}
+.water-big{font-family:'Cormorant Garamond',serif;font-size:68px;font-weight:700;line-height:1;}
+.water-drops-grid{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-bottom:18px;}
+.wdrop{width:44px;height:44px;border-radius:50%;border:none;font-size:20px;cursor:pointer;transition:transform .2s;display:flex;align-items:center;justify-content:center;}
+.wdrop.filled{background:#3BBFB8;color:#fff;}
+.wdrop.empty{background:#E8FAFA;color:#9B87A8;}
+.wdrop:hover{transform:scale(1.15);}
+
+/* SLEEP */
+.sleep-hero{background:linear-gradient(150deg,#2E1B4E,#5C3A8A);border-radius:20px;padding:22px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden;}
+.sleep-hero::before{content:'✦';position:absolute;top:14px;right:18px;font-size:36px;color:rgba(255,255,255,0.1);}
+.sleep-time-row{display:flex;gap:9px;margin-top:13px;}
+.sleep-time-box{flex:1;background:rgba(255,255,255,0.12);border-radius:13px;padding:11px;text-align:center;}
+.sleep-time-val{font-family:'Cormorant Garamond',serif;font-size:20px;color:#fff;font-weight:700;}
+.sleep-time-lbl{font-size:9px;color:rgba(255,255,255,0.7);margin-top:2px;}
+
+/* BMI */
+.bmi-result{border-radius:16px;padding:18px;text-align:center;margin-top:14px;}
+.bmi-number{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:700;line-height:1;}
+.bmi-scale{display:flex;border-radius:8px;overflow:hidden;height:9px;margin:13px 0 5px;}
+.bmi-scale div{flex:1;}
+
+/* CHALLENGES */
+.challenge-card{border-radius:16px;padding:14px;margin-bottom:11px;display:flex;align-items:center;gap:13px;transition:transform .18s;cursor:pointer;}
+.challenge-card:hover{transform:translateY(-2px);}
+.challenge-ico{width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:25px;flex-shrink:0;}
+.challenge-prog{height:6px;border-radius:20px;margin-top:7px;overflow:hidden;background:rgba(0,0,0,0.08);}
+.challenge-fill{height:100%;border-radius:20px;transition:width .6s ease;}
+
+/* CHART */
+.chart-wrap{display:flex;align-items:flex-end;gap:6px;height:100px;padding:0 2px;}
+.chart-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.chart-bar{width:100%;border-radius:5px 5px 0 0;transition:height .6s cubic-bezier(.4,0,.2,1);}
+.chart-xlabel{font-size:8px;color:var(--text-soft);}
+.chart-val{font-size:8px;color:var(--text-soft);}
+
+/* SETTINGS */
+.setting-row{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--border);}
+.toggle{width:42px;height:23px;border-radius:12px;background:#E0D8E8;border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
+.toggle.on{background:var(--rose);}
+.toggle::after{content:'';width:17px;height:17px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);}
+.toggle.on::after{transform:translateX(19px);}
+
+/* INPUT */
+.input{width:100%;padding:11px 15px;border:2px solid var(--border);border-radius:13px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color .2s;background:#fff;}
+.input:focus{border-color:var(--rose);}
+
+/* MOOD */
+.mood-row{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;}
+.mood-btn{width:48px;height:48px;border-radius:50%;border:2px solid var(--border);background:#fff;font-size:22px;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;}
+.mood-btn.selected{border-color:var(--rose);background:var(--rose-pale);transform:scale(1.18);}
+
+/* TIP */
+.tip-card{background:linear-gradient(135deg,var(--rose-light),var(--rose));border-radius:17px;padding:17px;color:#fff;margin-bottom:16px;min-height:76px;position:relative;overflow:hidden;}
+.tip-card::after{content:'"';position:absolute;right:12px;bottom:-14px;font-size:80px;color:rgba(255,255,255,0.08);font-family:'Cormorant Garamond',serif;}
+
+/* ACH */
+.ach-row{display:flex;gap:13px;align-items:center;padding:11px 0;border-bottom:1px solid var(--border);}
+.ach-ico{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;}
+
+/* MISC */
+.back-btn{background:none;border:none;color:var(--rose);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;margin-bottom:14px;font-weight:600;}
+.divider{height:1px;background:var(--border);margin:14px 0;}
+.meal-row{display:flex;gap:13px;align-items:center;padding:13px;border-radius:15px;background:#FAFAFA;margin-bottom:9px;}
+.meal-ico{width:48px;height:48px;border-radius:13px;background:#FFF8EE;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.macro-row{margin-bottom:12px;}
+.macro-top{display:flex;justify-content:space-between;margin-bottom:4px;}
+.flex{display:flex;} .gap8{gap:8px;} .gap10{gap:10px;} .gap12{gap:12px;}
+.mt8{margin-top:8px;} .mt12{margin-top:12px;} .mt16{margin-top:16px;}
+.mb8{margin-bottom:8px;} .mb12{margin-bottom:12px;} .mb16{margin-bottom:16px;}
+.serif{font-family:'Cormorant Garamond',serif;} .fw700{font-weight:700;}
+.fs11{font-size:11px;} .fs12{font-size:12px;} .fs13{font-size:13px;} .fs14{font-size:14px;} .fs16{font-size:16px;} .fs18{font-size:18px;}
+.text-rose{color:var(--rose);} .text-teal{color:var(--teal);} .text-soft{color:var(--text-soft);} .text-mid{color:var(--text-mid);}
+.lh15{line-height:1.5;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.page.active>*{animation:fadeUp .3s ease both;}
+.page.active>*:nth-child(2){animation-delay:.05s;}
+.page.active>*:nth-child(3){animation-delay:.1s;}
+.page.active>*:nth-child(4){animation-delay:.15s;}
+.page.active>*:nth-child(5){animation-delay:.2s;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
+.pulsing{animation:pulse 2s ease-in-out infinite;}
+</style>
+</head>
+<body>
+<div id="root">
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="header-top">
+      <div>
+        <div class="header-greeting" id="greeting">Good morning! ✨</div>
+        <div class="header-title">BloomFit 🌸</div>
+        <div class="header-streak" id="streakDisplay">🔥 6 day streak</div>
+      </div>
+      <div class="header-avatar" id="avatarEl">🌺</div>
+    </div>
+    <div class="header-stats">
+      <div class="hstat"><div class="hstat-val" id="hWater">3/8</div><div class="hstat-label">💧 Water</div></div>
+      <div class="hstat"><div class="hstat-val" id="hSessions">0</div><div class="hstat-label">🏋️ Done</div></div>
+      <div class="hstat"><div class="hstat-val" id="hCal">0</div><div class="hstat-label">🔥 Cal</div></div>
+      <div class="hstat"><div class="hstat-val" id="hSleep">7.5h</div><div class="hstat-label">🌙 Sleep</div></div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div id="content">
+
+    <!-- HOME -->
+    <div class="page active" id="page-home">
+      <div class="tip-card"><div style="font-size:10px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.7);margin-bottom:5px;">✦ DAILY WISDOM</div><div id="tipText" class="fs13 lh15"></div></div>
+      <div class="card mb12">
+        <div class="serif fs18 fw700 mb12">How are you feeling? 💭</div>
+        <div class="mood-row">
+          <div style="text-align:center"><button class="mood-btn" onclick="setMood(this,'Low','😔')">😔</button><div class="fs11 text-soft mt8">Low</div></div>
+          <div style="text-align:center"><button class="mood-btn" onclick="setMood(this,'Okay','😐')">😐</button><div class="fs11 text-soft mt8">Okay</div></div>
+          <div style="text-align:center"><button class="mood-btn" onclick="setMood(this,'Good','🙂')">🙂</button><div class="fs11 text-soft mt8">Good</div></div>
+          <div style="text-align:center"><button class="mood-btn" onclick="setMood(this,'Great','😊')">😊</button><div class="fs11 text-soft mt8">Great</div></div>
+          <div style="text-align:center"><button class="mood-btn" onclick="setMood(this,'Amazing','🌟')">🌟</button><div class="fs11 text-soft mt8">Amazing</div></div>
+        </div>
+        <div id="moodMsg" class="fs12 text-rose" style="text-align:center;margin-top:9px;min-height:18px;"></div>
+      </div>
+      <div class="section-title">Today's Plan 📋</div>
+      <div class="section-sub">Your daily wellness overview</div>
+      <div class="card mb12">
+        <div class="flex" style="justify-content:space-between;align-items:center;margin-bottom:9px;">
+          <div class="serif fs18 fw700">💧 Hydration</div>
+          <span class="badge badge-teal" id="waterBadgeHome">3/8 glasses</span>
+        </div>
+        <div class="pbar-bg mb12" style="height:9px;"><div class="pbar" id="waterBarHome" style="height:9px;background:linear-gradient(90deg,#3BBFB8,#52DED6);width:37.5%;"></div></div>
+        <div class="flex gap10"><button class="btn btn-outline btn-sm fw" onclick="adjustWater(-1)">– Remove</button><button class="btn btn-teal btn-sm fw" onclick="adjustWater(1)">+ Add Glass</button></div>
+      </div>
+      <div class="card mb12" style="background:linear-gradient(135deg,var(--rose-pale),#FFF5FF);">
+        <div class="serif fs18 fw700 mb12">🎯 Suggested Today</div>
+        <div style="display:flex;gap:11px;align-items:center;">
+          <div style="font-size:38px;">🧘</div>
+          <div>
+            <div class="serif fs16 fw700">Morning Yoga Flow</div>
+            <div class="fs12 text-soft">20 min · 120 cal · Beginner</div>
+            <div class="mt8"><button class="btn btn-rose btn-sm" onclick="showPage('workouts')">Start Now →</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="card mb12">
+        <div class="serif fs18 fw700 mb12">🍽️ Meal Reminders</div>
+        <div id="mealReminders"></div>
+      </div>
+      <div class="card" id="completedCard" style="display:none;">
+        <div class="serif fs18 fw700 mb12">🎉 Completed Today</div>
+        <div id="completedList"></div>
+      </div>
+    </div>
+
+    <!-- WORKOUTS -->
+    <div class="page" id="page-workouts">
+      <div id="workoutCategories">
+        <div class="section-title">Workouts 💪</div>
+        <div class="section-sub">Tap a category — each session has a full video!</div>
+        <div class="workout-grid" id="workoutGrid"></div>
+      </div>
+      <div id="workoutSessions" style="display:none;"></div>
+    </div>
+
+    <!-- NUTRITION -->
+    <div class="page" id="page-nutrition">
+      <div class="section-title">Nutrition 🥗</div>
+      <div class="section-sub">Today's healthy meal plan</div>
+      <div style="background:linear-gradient(135deg,var(--amber),#E8820A);border-radius:20px;padding:20px;color:#fff;margin-bottom:16px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.75);">DAILY CALORIE TARGET</div>
+        <div class="serif" style="font-size:40px;font-weight:700;margin-top:3px;">1,620 cal</div>
+        <div class="pbar-bg mt12" style="height:11px;background:rgba(255,255,255,0.25);"><div class="pbar" style="height:11px;background:#fff;width:68%;"></div></div>
+        <div class="fs12 mt8" style="color:rgba(255,255,255,0.9);">1,100 consumed · 520 remaining</div>
+      </div>
+      <div id="mealPlanList"></div>
+      <div class="card mt16">
+        <div class="serif fs18 fw700 mb12">📊 Macros</div>
+        <div class="macro-row"><div class="macro-top"><span style="font-size:13px;color:var(--text-mid);">🥩 Protein</span><span class="fw700 text-rose">35%</span></div><div class="pbar-bg" style="height:8px;"><div class="pbar" style="height:8px;background:var(--rose);width:35%;"></div></div></div>
+        <div class="macro-row"><div class="macro-top"><span style="font-size:13px;color:var(--text-mid);">🍞 Carbs</span><span class="fw700" style="color:var(--amber);">45%</span></div><div class="pbar-bg" style="height:8px;"><div class="pbar" style="height:8px;background:var(--amber);width:45%;"></div></div></div>
+        <div class="macro-row"><div class="macro-top"><span style="font-size:13px;color:var(--text-mid);">🥑 Fats</span><span class="fw700 text-teal">20%</span></div><div class="pbar-bg" style="height:8px;"><div class="pbar" style="height:8px;background:var(--teal);width:20%;"></div></div></div>
+      </div>
+      <div class="card mt16"><div class="serif fs18 fw700 mb12">💡 Nutrition Tips</div><div id="nutritionTips"></div></div>
+    </div>
+
+    <!-- WATER -->
+    <div class="page" id="page-water">
+      <div class="section-title">Hydration 💧</div>
+      <div class="section-sub">Track your daily water intake</div>
+      <div class="water-hero">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.75);">GLASSES TODAY</div>
+        <div class="water-big" id="waterBig">3</div>
+        <div class="fs13" style="color:rgba(255,255,255,0.85);">of <span id="waterGoalText">8</span> glasses</div>
+        <div class="pbar-bg mt12" style="height:11px;background:rgba(255,255,255,0.25);"><div class="pbar" id="waterBar2" style="height:11px;background:#fff;width:37.5%;"></div></div>
+        <div class="fs12 mt8" style="color:rgba(255,255,255,0.9);" id="waterGoalMsg">5 more glasses to go!</div>
+      </div>
+      <div class="water-drops-grid" id="waterDrops"></div>
+      <div class="flex gap10 mb16"><button class="btn btn-outline fw" onclick="adjustWater(-1)">– Remove</button><button class="btn btn-teal fw" onclick="adjustWater(1)">+ Add Glass</button></div>
+      <div class="card"><div class="serif fs18 fw700 mb12">Why Water Matters 🌊</div><div id="waterBenefits"></div></div>
+      <div class="card mt16"><div class="serif fs18 fw700 mb12">⏰ Reminder Schedule</div><div id="waterSchedule"></div></div>
+    </div>
+
+    <!-- SLEEP -->
+    <div class="page" id="page-sleep">
+      <div class="section-title">Sleep Tracker 🌙</div>
+      <div class="section-sub">Quality sleep accelerates fat loss</div>
+      <div class="sleep-hero">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.7);">LAST NIGHT</div>
+        <div class="serif" style="font-size:34px;color:#fff;font-weight:700;margin-top:3px;" id="sleepTotal">7h 30m</div>
+        <div class="fs12" style="color:rgba(255,255,255,0.8);margin-top:3px;">😴 Good sleep – aim for 7–9 hours</div>
+        <div class="sleep-time-row">
+          <div class="sleep-time-box"><div class="sleep-time-val" id="bedtimeDisplay">10:30 PM</div><div class="sleep-time-lbl">Bedtime</div></div>
+          <div class="sleep-time-box"><div class="sleep-time-val" id="waketimeDisplay">6:00 AM</div><div class="sleep-time-lbl">Wake Time</div></div>
+          <div class="sleep-time-box"><div class="sleep-time-val" id="qualityDisplay">⭐⭐⭐⭐</div><div class="sleep-time-lbl">Quality</div></div>
+        </div>
+      </div>
+      <div class="card mb16">
+        <div class="serif fs18 fw700 mb12">📝 Log Tonight</div>
+        <div class="mb12"><label class="fs12 text-mid fw700">Bedtime</label><br><input class="input mt8" type="time" id="bedtimeInput" value="22:30"></div>
+        <div class="mb12"><label class="fs12 text-mid fw700">Wake Time</label><br><input class="input mt8" type="time" id="waketimeInput" value="06:00"></div>
+        <div class="mb12">
+          <label class="fs12 text-mid fw700">Sleep Quality</label>
+          <div class="flex gap8 mt8">
+            <button class="btn btn-outline btn-sm" onclick="setSleepQuality(1)">Poor</button>
+            <button class="btn btn-outline btn-sm" onclick="setSleepQuality(2)">Fair</button>
+            <button class="btn btn-outline btn-sm" onclick="setSleepQuality(3)">Good</button>
+            <button class="btn btn-rose btn-sm" onclick="setSleepQuality(4)">Great</button>
+          </div>
+        </div>
+        <button class="btn btn-rose fw" onclick="saveSleep()">Save Sleep Log</button>
+      </div>
+      <div class="card"><div class="serif fs18 fw700 mb12">💤 Sleep & Weight Loss</div><div id="sleepTips"></div></div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="page" id="page-progress">
+      <div class="section-title">Progress 📈</div>
+      <div class="section-sub">Your weight loss journey over time</div>
+      <div class="card mb16">
+        <div class="serif fs18 fw700 mb12">⚖️ Log Weight</div>
+        <div class="flex gap10" style="align-items:center;">
+          <input class="input" type="number" id="weightInput" placeholder="e.g. 68.5" step="0.1">
+          <span class="fs12 text-soft" style="white-space:nowrap;">kg</span>
+          <button class="btn btn-rose btn-sm" onclick="saveWeight()">Save</button>
+        </div>
+      </div>
+      <div class="card mb16">
+        <div class="serif fs18 fw700 mb12">📉 Weight Chart</div>
+        <div class="chart-wrap" id="weightChart"></div>
+        <div id="weightSummary" class="mt16" style="background:var(--mint-pale);border-radius:13px;padding:13px;display:flex;gap:10px;align-items:center;"></div>
+      </div>
+      <div class="card mb16">
+        <div class="serif fs18 fw700 mb12">📏 BMI Calculator</div>
+        <div class="flex gap10 mb12">
+          <div style="flex:1;"><label class="fs12 text-mid fw700">Height (cm)</label><input class="input mt8" type="number" id="heightInput" placeholder="165" value="165"></div>
+          <div style="flex:1;"><label class="fs12 text-mid fw700">Weight (kg)</label><input class="input mt8" type="number" id="bmiWeightInput" placeholder="70" value="68.4"></div>
+        </div>
+        <button class="btn btn-rose btn-sm" onclick="calcBMI()">Calculate BMI</button>
+        <div id="bmiResult" style="display:none;" class="bmi-result mt16"></div>
+      </div>
+      <div class="card"><div class="serif fs18 fw700 mb12">🏆 Achievements</div><div id="achievementsList"></div></div>
+    </div>
+
+    <!-- CHALLENGES -->
+    <div class="page" id="page-challenges">
+      <div class="section-title">Challenges 🏅</div>
+      <div class="section-sub">Stay motivated with weekly goals</div>
+      <div id="challengesList"></div>
+      <div class="card mt16">
+        <div class="serif fs18 fw700 mb12">🎖 Monthly Goal</div>
+        <div class="fs13 text-mid mb12">Lose 2kg this month</div>
+        <div class="pbar-bg" style="height:11px;"><div class="pbar" style="height:11px;background:linear-gradient(90deg,var(--rose),var(--coral));width:72%;"></div></div>
+        <div class="flex mt8" style="justify-content:space-between;"><span class="fs12 text-soft">1.44 kg lost</span><span class="fs12 fw700 text-rose">72% complete</span></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page" id="page-settings">
+      <div class="section-title">Settings ⚙️</div>
+      <div class="section-sub">Customize your experience</div>
+      <div class="card mb16">
+        <div class="serif fs18 fw700 mb12">👤 My Profile</div>
+        <div class="mb12"><label class="fs12 text-mid fw700">Name</label><input class="input mt8" type="text" id="profileName" placeholder="Your name" value="Bloom User"></div>
+        <div class="flex gap10 mb12">
+          <div style="flex:1;"><label class="fs12 text-mid fw700">Age</label><input class="input mt8" type="number" id="profileAge" placeholder="28" value="28"></div>
+          <div style="flex:1;"><label class="fs12 text-mid fw700">Goal (kg)</label><input class="input mt8" type="number" id="goalWeight" placeholder="60" value="60"></div>
+        </div>
+        <button class="btn btn-rose btn-sm" onclick="saveProfile()">Save Profile ✓</button>
+      </div>
+      <div class="card mb16">
+        <div class="serif fs18 fw700 mb12">🔔 Notifications</div>
+        <div id="settingsToggles"></div>
+      </div>
+      <div class="card mb16">
+        <div class="serif fs18 fw700 mb12">💧 Daily Water Goal</div>
+        <div class="flex gap10" style="align-items:center;">
+          <button class="btn btn-outline btn-sm" onclick="adjustGoal(-1)">–</button>
+          <span class="serif" style="font-size:24px;font-weight:700;color:var(--teal);" id="goalDisplay">8</span>
+          <span class="fs12 text-soft">glasses / day</span>
+          <button class="btn btn-teal btn-sm" onclick="adjustGoal(1)">+</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="serif fs18 fw700 mb12">🌸 About BloomFit</div>
+        <div class="fs13 text-mid lh15">BloomFit is your all-in-one wellness app for yoga, pilates, zumba, meditation, postpartum recovery, cardio, strength & more — with real workout videos for every session. Built with love to help you bloom. 🌺</div>
+        <div class="divider"></div>
+        <div class="fs12 text-soft">Version 2.0 · Made with ♥</div>
+      </div>
+    </div>
+
+  </div><!-- end content -->
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-home" onclick="showPage('home')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
+    <button class="nav-btn" id="nav-workouts" onclick="showPage('workouts')"><span class="nav-icon">💪</span><span class="nav-label">Workouts</span></button>
+    <button class="nav-btn" id="nav-nutrition" onclick="showPage('nutrition')"><span class="nav-icon">🥗</span><span class="nav-label">Meals</span></button>
+    <button class="nav-btn" id="nav-water" onclick="showPage('water')"><span class="nav-icon">💧</span><span class="nav-label">Water</span></button>
+    <button class="nav-btn" id="nav-sleep" onclick="showPage('sleep')"><span class="nav-icon">🌙</span><span class="nav-label">Sleep</span></button>
+    <button class="nav-btn" id="nav-progress" onclick="showPage('progress')"><span class="nav-icon">📈</span><span class="nav-label">Progress</span></button>
+    <button class="nav-btn" id="nav-challenges" onclick="showPage('challenges')"><span class="nav-icon">🏅</span><span class="nav-label">Goals</span></button>
+    <button class="nav-btn" id="nav-settings" onclick="showPage('settings')"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
+  </nav>
+</div>
+
+<!-- VIDEO MODAL (injected dynamically) -->
+<div id="videoModal" class="video-modal" style="display:none;"></div>
+
+<script>
+// ════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════
+const S = {
+  waterCount: +localStorage.getItem('bf_water')||3,
+  waterGoal:  +localStorage.getItem('bf_wgoal')||8,
+  completed:  JSON.parse(localStorage.getItem('bf_done')||'[]'),
+  streak:     +localStorage.getItem('bf_streak')||6,
+  weights:    JSON.parse(localStorage.getItem('bf_weights')||'[72,71.2,70.5,69.8,69.1,68.4]'),
+  sleepHours: +localStorage.getItem('bf_sleep')||7.5,
+  settings:   JSON.parse(localStorage.getItem('bf_settings')||'{"waterR":true,"workoutR":true,"mealR":true,"sleepR":true}'),
+  tipIdx: 0, timerInterval:null, timeLeft:0, timerRunning:false, activeSession:null,
+};
+function persist(){
+  localStorage.setItem('bf_water', S.waterCount);
+  localStorage.setItem('bf_wgoal', S.waterGoal);
+  localStorage.setItem('bf_done',  JSON.stringify(S.completed));
+  localStorage.setItem('bf_streak',S.streak);
+  localStorage.setItem('bf_weights',JSON.stringify(S.weights));
+  localStorage.setItem('bf_sleep', S.sleepHours);
+  localStorage.setItem('bf_settings',JSON.stringify(S.settings));
+}
+
+// ════════════════════════════════════════════
+// DATA — WORKOUTS WITH YOUTUBE IDs
+// ════════════════════════════════════════════
+const WORKOUTS = [
+  { id:'yoga', name:'Yoga', icon:'🧘', color:'#9B8EC4', bg:'#F2F0FF',
+    sessions:[
+      { name:'Morning Flow', dur:20, level:'Beginner', cal:120,
+        desc:'Gentle wake-up sequence to energize your body and set a calm, intentional tone for the day.',
+        yt:'UEEsdXn8oG8',
+        steps:['Start in Child\'s Pose — hold 1 min','Move to Cat-Cow (10 reps)','Downward Dog — pedal heels','Low lunge — both sides','Sun Salutation A × 5 rounds','Seated forward fold — hold 1 min','Savasana — 3 min'] },
+      { name:'Power Vinyasa', dur:45, level:'Intermediate', cal:250,
+        desc:'Dynamic flow linking breath to movement — builds strength, flexibility and mental focus.',
+        yt:'9kOCY0KNByw',
+        steps:['Warm-up: 3 Sun Salutations','Warrior I → II → Reverse Warrior','Triangle Pose both sides','Balancing half-moon','Chair Pose → Twists','Core sequence: boat + plank','Cool down floor stretches','Savasana 5 min'] },
+      { name:'Yin Deep Stretch', dur:30, level:'All levels', cal:100,
+        desc:'Slow-paced practice holding poses 3–5 min each to release deep connective tissue and fascia.',
+        yt:'EvyEXCT-ZQM',
+        steps:['Butterfly pose — 4 min','Dragon pose (hip flexor) L side — 3 min','Dragon pose R side — 3 min','Sleeping swan / pigeon — 3 min each','Spinal twist — 3 min each side','Caterpillar — 4 min','Final Savasana — 5 min'] },
+      { name:'Core Yoga', dur:25, level:'Intermediate', cal:180,
+        desc:'Strengthen your core with yoga-inspired balance and abdominal work for a flatter, stronger tummy.',
+        yt:'UItWltVZlfY',
+        steps:['Plank hold 3×30 sec','Boat pose 3×10 breaths','Side plank both sides','Navasana twists 10 reps','Chaturanga rows 10 reps','Bird-dog 10 reps each side','Bridge pose 3×15','Cool down Cat-Cow'] },
+      { name:'Restorative Yoga', dur:40, level:'Beginner', cal:80,
+        desc:'Deeply relaxing poses held for 5+ minutes to restore the nervous system and melt away stress.',
+        yt:'BiWDHOZVxHI',
+        steps:['Supported child\'s pose — 5 min','Legs up the wall — 7 min','Supported reclining twist — 4 min each','Supported bridge with block — 5 min','Happy baby — 4 min','Savasana with eye pillow — 8 min'] },
+    ]
+  },
+  { id:'pilates', name:'Pilates', icon:'🤸', color:'#E8557A', bg:'#FFF0F4',
+    sessions:[
+      { name:'Mat Pilates Basics', dur:30, level:'Beginner', cal:160,
+        desc:'Foundation movements that build deep core strength from the ground up — perfect for beginners.',
+        yt:'1tMSHBx_6ts',
+        steps:['Pelvic tilts 10 reps','The Hundred (modified)','Roll-up 8 reps','Single leg stretch 10 reps','Double leg stretch 10 reps','Spine stretch forward','Rolling like a ball 8 reps','Swan prep 10 reps'] },
+      { name:'Reformer-Inspired Flow', dur:40, level:'Intermediate', cal:220,
+        desc:'Full-body conditioning with reformer-inspired moves you can do on a mat — tone and sculpt all over.',
+        yt:'qEXHkEGmgcY',
+        steps:['Footwork series 30 reps','Long stretch series','Short box series','Elephant stretch','Long box pulling straps','Side splits (standing)','Mermaid stretch','Swan full extension'] },
+      { name:'Pilates Sculpt', dur:35, level:'Advanced', cal:280,
+        desc:'High-intensity Pilates toning targeting every muscle group for a sleek, sculpted physique.',
+        yt:'i9DMlJQNcEA',
+        steps:['Warm-up: roll down series','Teaser 3×8 reps','Corkscrew 10 reps','Jackknife 8 reps','Star balance 10 each side','Push-up series 3×10','Criss-cross 20 reps','Control balance hold'] },
+      { name:'Pilates for Posture', dur:20, level:'Beginner', cal:100,
+        desc:'Alignment-focused session targeting the muscles that support perfect posture and spinal health.',
+        yt:'4pKly2JojMw',
+        steps:['Chin tucks 15 reps','Chest opener stretch 3 min','Shoulder blade squeezes 15 reps','Wall angels 10 reps','Cat-cow thoracic extension','Hip flexor lunge stretch','Glute bridge 15 reps','Final tall sitting posture hold'] },
+      { name:'Barre Pilates Fusion', dur:45, level:'Intermediate', cal:300,
+        desc:'Ballet-inspired barre work meets Pilates precision — tone your thighs, seat, and arms beautifully.',
+        yt:'LNhTQSoJEGQ',
+        steps:['Plié warm-up series','Relevé calf raises 40 reps','Arabesque lifts 20 each','Barre lunges with pulses','Standing seat work','Pilates hundred in barre stance','Mat core finisher','Cool down port de bras'] },
+    ]
+  },
+  { id:'zumba', name:'Zumba', icon:'💃', color:'#F5A623', bg:'#FFF8EE',
+    sessions:[
+      { name:'Zumba Party', dur:45, level:'All levels', cal:400,
+        desc:'High-energy Latin dance cardio blast — salsa, merengue, cumbia! Pure fun that burns serious calories.',
+        yt:'FjdHIrbxMtw',
+        steps:['Merengue warm-up march','Salsa basic right & left','Cumbia footwork','Reggaeton hip rolls','Cha-cha choreography','Samba bounce sequence','Cool-down cumbia','Stretch & salsa walk-out'] },
+      { name:'Zumba Gold', dur:30, level:'Beginner', cal:250,
+        desc:'Lower-impact dance moves with all the fun of Zumba — perfect for beginners or joint-sensitive days.',
+        yt:'hHcj4N3SMRY',
+        steps:['Gentle march warm-up','Slow salsa steps','Low-impact merengue','Seated mambo moves','Standing swing steps','Gentle cha-cha','Hip sway sequence','Cool down stretches'] },
+      { name:'Zumba Toning', dur:40, level:'Intermediate', cal:350,
+        desc:'Combine energetic Zumba dancing with light resistance moves to sculpt your arms and core while dancing.',
+        yt:'ZOakFnJo9M0',
+        steps:['Cardio salsa warm-up','Arm toning overhead press × salsa','Bicep curl merengue combo','Lateral raise samba','Tricep kickback cumbia','Core twists reggaeton','Low squat hold × dance','Cool down & stretch'] },
+      { name:'Salsa Cardio', dur:25, level:'Beginner', cal:200,
+        desc:'Fun salsa-inspired cardio to lift your mood, burn calories, and learn real dance moves.',
+        yt:'qrB3sMGkEFo',
+        steps:['Basic salsa box step','Forward-back salsa timing','Cross-body lead footwork','Cumbia side step combo','Spinning basics (slow)','Salsa walk combination','Full choreography run-through','Cool down stretch'] },
+      { name:'Reggaeton Burn', dur:35, level:'Intermediate', cal:320,
+        desc:'High-energy reggaeton beats power this full-body cardio session — dance, sweat and have a blast.',
+        yt:'J7r70PKFWNQ',
+        steps:['Bounce warm-up','Hip pop & lock sequence','Step-touch reggaeton','Booty pop squat combo','Power jump intervals','Floor work section','Stand up cardio burst','Cool down body roll'] },
+    ]
+  },
+  { id:'meditation', name:'Meditation', icon:'🌸', color:'#3BBFB8', bg:'#E8FAFA',
+    sessions:[
+      { name:'Morning Mindfulness', dur:10, level:'All levels', cal:30,
+        desc:'Start your day with clarity and intention — a 10-minute guided practice to center your mind.',
+        yt:'inpok4MKVLM',
+        steps:['Comfortable seat or lying down','3 deep cleansing breaths','Body scan from head to toe','Set your intention for the day','Breath awareness — 4 min','Loving-kindness visualization','Gentle opening of eyes','Carry calm into your day'] },
+      { name:'Body Scan', dur:20, level:'Beginner', cal:20,
+        desc:'Deep relaxation through progressive body awareness — release tension held in every muscle.',
+        yt:'QS2yDmWk0vs',
+        steps:['Lie flat, close eyes','Slow breath to settle','Scan: feet → calves','Scan: thighs → hips','Scan: belly → chest','Scan: hands → arms → shoulders','Scan: neck → face → crown','Rest in full body awareness'] },
+      { name:'Stress Relief', dur:15, level:'All levels', cal:25,
+        desc:'Release tension and activate your parasympathetic nervous system in just 15 calming minutes.',
+        yt:'O-6f5wQXSu8',
+        steps:['4-7-8 breathing × 4 cycles','Progressive muscle relaxation','Anxiety-releasing visualization','Cortisol-lowering breath work','Positive affirmation sequence','Heart-rate-lowering technique','Grounding 5-4-3-2-1 exercise','Gentle return to alertness'] },
+      { name:'Sleep Meditation', dur:25, level:'All levels', cal:15,
+        desc:'Guided sleep meditation to help you drift into deep, restorative, fat-burning sleep.',
+        yt:'aEqlQvczMJQ',
+        steps:['Comfortable sleeping position','Release the day with breath','Progressive relaxation face → toes','Peaceful visualization','Ocean sound breathing','Count down 10 → 1','Drift into dream space','Sleep deeply'] },
+      { name:'Breathwork', dur:12, level:'All levels', cal:20,
+        desc:'Box breathing, 4-7-8 and Wim Hof techniques to reduce anxiety, boost energy and balance hormones.',
+        yt:'tybOi4hjZFQ',
+        steps:['Box breathing 4 rounds (4-4-4-4)','4-7-8 breathing 4 rounds','Alternate nostril breathing 5 min','Kapalabhati breath 2 min','Full yogic breath 3 min','Body buzz awareness','Return to normal breathing','Integrate the calm'] },
+    ]
+  },
+  { id:'postpartum', name:'Postpartum', icon:'👶', color:'#52C98A', bg:'#EDFFF5',
+    sessions:[
+      { name:'Gentle Recovery', dur:15, level:'Beginner', cal:60,
+        desc:'Safe, gentle movements for early postpartum recovery (6–12 weeks) — approved by physiotherapists.',
+        yt:'SaHYAjShF6A',
+        steps:['Deep diaphragmatic breathing','Pelvic floor activation (gentle)','Heel slides 10 each side','Glute squeeze hold 10 reps','Ankle circles both feet','Gentle neck rolls','Side-lying arm circles','Rest & hydrate'] },
+      { name:'Pelvic Floor Rehab', dur:20, level:'Beginner', cal:50,
+        desc:'Targeted exercises to strengthen and fully heal your pelvic floor — essential after birth.',
+        yt:'aNMYDrI0oVM',
+        steps:['Awareness breath (feel pelvic floor)','Kegel hold 5 sec × 10','Quick flick Kegels × 20','Elevator Kegels (3 levels)','Pelvic clock exercise','Bridge with pelvic floor cue','Side-lying clamshells 15 each','Relaxation release breathing'] },
+      { name:'Core Restore', dur:25, level:'Beginner', cal:90,
+        desc:'Heal diastasis recti and safely rebuild core strength without crunches or harmful movements.',
+        yt:'RMkSifwLPfQ',
+        steps:['90-90 breathing technique','Abdominal reconnection cues','Dead bug (feet only) 10 reps','Dead bug (arms only) 10 reps','Bird-dog 10 each side','Modified plank hold 3×20 sec','Side-lying leg lifts 15 each','Standing posture reset'] },
+      { name:'Mama & Baby Flow', dur:30, level:'All levels', cal:150,
+        desc:'Fun, bonding workout you can do with your baby — tummy time, lifts, and dancing together!',
+        yt:'j5gSzF_-2RE',
+        steps:['Baby tummy time on your chest','Baby-assisted squats 15 reps','Baby overhead press 10 reps','Baby airplane (core)','Floor play + push-ups','Baby bounce squats 20 reps','Mommy-baby dance cardio','Cuddle cool down'] },
+      { name:'Postpartum HIIT', dur:20, level:'Intermediate', cal:200,
+        desc:'Low-impact HIIT designed specifically for postpartum bodies ready to safely increase intensity.',
+        yt:'E7GtWMBPlqk',
+        steps:['Walk + arm swings warm-up','Lateral step touch × 45 sec','Standing march with drive','Reverse lunge alternating × 45 sec','Step-out squat × 45 sec','Modified mountain climbers','Standing bicycle abs','Walk-out cool down'] },
+    ]
+  },
+  { id:'cardio', name:'Cardio', icon:'🏃', color:'#F4845F', bg:'#FFF2EE',
+    sessions:[
+      { name:'HIIT Blast', dur:20, level:'Intermediate', cal:350,
+        desc:'High-intensity intervals for maximum fat burn in minimal time — 40 sec on, 20 sec rest.',
+        yt:'ml6cT4AZdqI',
+        steps:['Warm-up: jog in place 2 min','Jump squats × 40 sec','Push-ups × 40 sec','High knees × 40 sec','Burpees × 40 sec','Mountain climbers × 40 sec','Jump lunges × 40 sec','Plank hold + cool down'] },
+      { name:'Walking Workout', dur:30, level:'Beginner', cal:180,
+        desc:'Low-impact walking with interval surges — great cardio for all fitness levels, no equipment needed.',
+        yt:'yQJZ6DQTK7I',
+        steps:['Easy walk warm-up 3 min','Brisk walk 3 min','Power walk + arm swing 3 min','Walk + high knee march 2 min','Sideways shuffle 1 min each','Backwards walk 2 min','Speed burst 1 min × 3','Cool down easy walk 3 min'] },
+      { name:'Jump Rope Cardio', dur:15, level:'Intermediate', cal:220,
+        desc:'Skipping-inspired cardio — no rope needed! Follow the rhythm for a serious calorie torcher.',
+        yt:'FJmRQ5iTXKE',
+        steps:['2-foot jump warm-up 2 min','Alternating foot jump 3 min','High knee skips 2 min','Double-under simulation 2 min','Side-to-side hops 2 min','Criss-cross arms 2 min','Cool down march 2 min'] },
+      { name:'Dance Cardio', dur:25, level:'All levels', cal:280,
+        desc:'Free-style dance cardio that doesn\'t feel like exercise — groove your way to a fitter you.',
+        yt:'ASlOLBfEU58',
+        steps:['Warm-up body groove','Step-touch cardio base','Grapevine left & right','Hip hop bounce intervals','Latin-inspired hip sway','Jump & clap sequence','Full choreography combo','Cool down stretch & flow'] },
+      { name:'Kickboxing', dur:30, level:'Intermediate', cal:380,
+        desc:'Empowering kickboxing combos for serious stress relief and fat loss — no equipment needed.',
+        yt:'KOnt4PzaGfs',
+        steps:['Fighting stance + footwork','Jab-cross combination','Jab-cross-hook × 3 min','Front kick + back kick','Jab-cross-hook-uppercut','Knee strike combos','Kick-punch combo sequences','Shadow boxing cool down'] },
+    ]
+  },
+  { id:'strength', name:'Strength', icon:'🏋️', color:'#E8557A', bg:'#FFF0F4',
+    sessions:[
+      { name:'Full Body Strength', dur:35, level:'Intermediate', cal:300,
+        desc:'Compound movements targeting every major muscle group for maximum strength and metabolic boost.',
+        yt:'vc1E5CfRfos',
+        steps:['Warm-up: dynamic stretching','Squat 3×12','Push-up 3×10','Reverse lunge 3×10 each','Bent-over row 3×12','Overhead press 3×10','Romanian deadlift 3×12','Plank 3×30 sec'] },
+      { name:'Upper Body Focus', dur:25, level:'Intermediate', cal:200,
+        desc:'Arms, shoulders, chest and back — bodyweight and resistance band exercises for a toned upper body.',
+        yt:'IODxDxX7oi4',
+        steps:['Push-up variations 3×10','Band pull-apart 3×15','Pike push-up 3×8','Band row 3×12','Tricep dip 3×12','Band bicep curl 3×15','Diamond push-up 2×8','Plank shoulder tap 2×20'] },
+      { name:'Lower Body Burn', dur:30, level:'Beginner', cal:250,
+        desc:'Glutes, quads, hamstrings and calves — build a strong, toned lower body with zero equipment.',
+        yt:'UoC_O3HzsH0',
+        steps:['Glute bridge 3×15','Sumo squat 3×15','Lateral lunge 3×10 each','Donkey kick 3×15 each','Fire hydrant 3×15 each','Single-leg deadlift 3×10 each','Calf raise 3×20','Curtsy lunge 3×10 each'] },
+      { name:'Core & Abs', dur:20, level:'All levels', cal:180,
+        desc:'Targeted core work for a strong, stable, flat tummy — no sit-ups required!',
+        yt:'DHD1-2P4jfg',
+        steps:['Plank 3×30 sec','Dead bug 3×10','Side plank 2×20 sec each','Leg lower 3×10','Bird-dog 3×10 each','Reverse crunch 3×15','V-sit hold 3×20 sec','Russian twist 3×20'] },
+    ]
+  },
+  { id:'stretching', name:'Stretching', icon:'🦵', color:'#9B8EC4', bg:'#F2F0FF',
+    sessions:[
+      { name:'Full Body Stretch', dur:15, level:'All levels', cal:50,
+        desc:'Head-to-toe flexibility routine — daily mobility work that prevents injury and reduces soreness.',
+        yt:'g_tea8ZNk5A',
+        steps:['Neck rolls 1 min','Shoulder cross-body stretch 1 min','Chest opener 1 min','Seated spinal twist each side','Seated forward fold 2 min','Hip flexor lunge each side','Hamstring stretch each side','Pigeon pose each side'] },
+      { name:'Hip Opener Flow', dur:20, level:'Beginner', cal:40,
+        desc:'Release tight hips and lower back tension — essential for desk workers and postpartum recovery.',
+        yt:'TSMdnCqTZ_A',
+        steps:['Figure-four stretch 2 min each','Low lunge hip flexor 2 min each','Pigeon pose 3 min each','Frog pose 3 min','Happy baby 2 min','Butterfly pose 2 min','Supine spinal twist 1 min each','Savasana 2 min'] },
+      { name:'Morning Wake-Up', dur:10, level:'Beginner', cal:30,
+        desc:'5-10 minutes of gentle mobility to wake up your body and start the day without stiffness.',
+        yt:'g_tea8ZNk5A',
+        steps:['Cat-cow 10 reps','Thread the needle each side','Child\'s pose 1 min','Downward dog pedal 1 min','Standing forward fold 1 min','Side bend each side','Hip circle swings','Mountain pose — breathe'] },
+      { name:'Post-Workout Recovery', dur:15, level:'All levels', cal:45,
+        desc:'Essential cool-down to prevent soreness, speed recovery and improve long-term flexibility.',
+        yt:'qULTwquOuT4',
+        steps:['Standing quad stretch each leg','Hamstring doorway stretch','Hip flexor lunge stretch','Figure-four glute stretch','Chest and shoulder opening','Spinal twist on ground','Legs-up-the-wall 3 min','Deep breathing cool down'] },
+    ]
+  },
+];
+
+// ════════════════════════════════════════════
+// OTHER DATA
+// ════════════════════════════════════════════
+const TIPS=[
+  '💧 Drink a glass of water 30 min before meals to reduce hunger by up to 20%.',
+  '🌙 Poor sleep raises ghrelin (hunger hormone) by 28%. Aim for 7–9 hours.',
+  '🚶 A 10-minute walk after meals boosts metabolism and reduces blood sugar.',
+  '🥦 Fill half your plate with vegetables — low calorie, nutrient-dense.',
+  '📱 Tracking your meals doubles your weight loss success rate.',
+  '🧘 Chronic stress raises cortisol — the belly-fat hormone. Meditate daily.',
+  '🍽️ Eat slowly — it takes 20 minutes for your brain to register fullness.',
+  '🎵 Upbeat music during workouts can boost endurance by up to 15%.',
+  '💪 Strength training raises your resting metabolism for 24–48 hours.',
+  '🌅 Morning sunlight regulates cortisol and sets your circadian rhythm.',
+  '🍋 Add lemon to water — supports digestion and adds refreshing flavor.',
+  '🫁 Deep breathing before meals activates your rest-and-digest system.',
+];
+const MEALS=[
+  {meal:'Breakfast',icon:'🌅',suggestion:'Greek yogurt with mixed berries & granola',calories:320,time:'7:00 AM',tip:'High protein to curb morning hunger'},
+  {meal:'Morning Snack',icon:'🍎',suggestion:'Apple with 2 tbsp almond butter',calories:180,time:'10:00 AM',tip:'Healthy fats + fiber = sustained energy'},
+  {meal:'Lunch',icon:'☀️',suggestion:'Quinoa salad with grilled chicken & avocado',calories:450,time:'1:00 PM',tip:'Complex carbs fuel afternoon workouts'},
+  {meal:'Afternoon Snack',icon:'🥕',suggestion:'Hummus with carrot & cucumber sticks',calories:150,time:'4:00 PM',tip:'Prevents pre-dinner overeating'},
+  {meal:'Dinner',icon:'🌙',suggestion:'Baked salmon with roasted vegetables',calories:520,time:'7:00 PM',tip:'Omega-3s boost fat metabolism overnight'},
+];
+const WATER_BENEFITS=[['⚡','Boosts metabolism by up to 30% within 40 minutes'],['🍽️','Reduces calorie intake by suppressing false hunger'],['💪','Improves exercise performance and reduces fatigue'],['✨','Clears skin, reduces bloating, flushes toxins'],['🧠','Sharpens focus, mood and cognitive performance'],['❤️','Supports heart health and blood pressure'],];
+const WATER_SCHED=['7:00 AM','9:00 AM','11:00 AM','1:00 PM','3:00 PM','5:00 PM','7:00 PM','9:00 PM'];
+const SLEEP_TIPS=[['🌡️','Sleep deprivation slows metabolism by up to 15% next day.'],['🍫','Poor sleep increases cravings for sugary foods by 45%.'],['💪','Growth hormone — which burns fat — is released in deep sleep.'],['📵','Avoid screens 1 hour before bed. Blue light disrupts melatonin.'],['🌙','Keep your bedroom cool (18–20°C) for optimal sleep quality.'],['☕','Cut caffeine after 2 PM to protect your sleep architecture.'],];
+const CHALLENGES=[
+  {name:'7-Day Yoga Challenge',icon:'🧘',color:'#F2F0FF',accent:'#9B8EC4',desc:'Complete a yoga session every day for 7 days',p:4,t:7,u:'days'},
+  {name:'10,000 Steps Daily',icon:'👟',color:'#FFF0F4',accent:'#E8557A',desc:'Hit 10,000 steps for 5 consecutive days',p:3,t:5,u:'days'},
+  {name:'Hydration Hero',icon:'💧',color:'#E8FAFA',accent:'#3BBFB8',desc:'Drink 8 glasses of water 7 days straight',p:6,t:7,u:'days'},
+  {name:'No Sugar Week',icon:'🍬',color:'#FFF8EE',accent:'#F5A623',desc:'Avoid added sugars for 7 days',p:2,t:7,u:'days'},
+  {name:'Morning Meditate',icon:'🌅',color:'#EDFFF5',accent:'#52C98A',desc:'Meditate every morning for 5 days',p:5,t:5,u:'days'},
+  {name:'Postpartum Strong',icon:'👶',color:'#F2F0FF',accent:'#9B8EC4',desc:'Complete all 5 postpartum sessions',p:3,t:5,u:'sessions'},
+];
+const ACHIEVEMENTS=[
+  {icon:'🔥',title:'6-Day Streak',desc:'Worked out 6 days in a row',e:true},
+  {icon:'💧',title:'Hydration Hero',desc:'Hit daily water goal 5 times',e:true},
+  {icon:'⚖️',title:'First 2kg Lost',desc:'Lost your first 2 kilograms',e:true},
+  {icon:'🧘',title:'Zen Master',desc:'Complete 10 meditation sessions',e:false,p:'4/10'},
+  {icon:'💃',title:'Zumba Queen',desc:'Complete 5 Zumba sessions',e:false,p:'2/5'},
+  {icon:'🌅',title:'Early Bird',desc:'Complete 7 morning workouts',e:false,p:'3/7'},
+  {icon:'💪',title:'Strength Seeker',desc:'Complete 10 strength sessions',e:false,p:'1/10'},
+  {icon:'🌸',title:'Bloom Journey',desc:'Use the app for 30 days',e:false,p:'6/30'},
+];
+const NUTRITION_TIPS=['🥦 Eat the rainbow — aim for 5 different colored vegetables daily.','🧂 Season with herbs & spices instead of salt to reduce bloating.','🍳 Prioritize protein at breakfast to stay full until lunch.','🫙 Meal prep Sunday to avoid impulsive food choices all week.','🍵 Replace one sugary drink with green tea for fat-burning catechins.',];
+
+// ════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.getElementById('nav-'+id).classList.add('active');
+  document.getElementById('content').scrollTop=0;
+  if(id==='workouts') resetWorkoutView();
+}
+
+// ════════════════════════════════════════════
+// HEADER & TIPS
+// ════════════════════════════════════════════
+function updateHeader(){
+  const h=new Date().getHours();
+  document.getElementById('greeting').textContent=h<12?'Good morning! ✨':h<17?'Good afternoon! ☀️':'Good evening! 🌙';
+  document.getElementById('hWater').textContent=S.waterCount+'/'+S.waterGoal;
+  document.getElementById('hSessions').textContent=S.completed.length;
+  document.getElementById('hCal').textContent=S.completed.length*220;
+  document.getElementById('hSleep').textContent=S.sleepHours+'h';
+  document.getElementById('streakDisplay').textContent='🔥 '+S.streak+' day streak';
+}
+function rotateTip(){
+  const el=document.getElementById('tipText');
+  if(el){el.style.opacity=0;setTimeout(()=>{el.textContent=TIPS[S.tipIdx];el.style.opacity=1;S.tipIdx=(S.tipIdx+1)%TIPS.length;},300);}
+}
+
+// ════════════════════════════════════════════
+// WATER
+// ════════════════════════════════════════════
+function adjustWater(d){S.waterCount=Math.max(0,Math.min(S.waterGoal,S.waterCount+d));persist();updateWaterUI();}
+function adjustGoal(d){S.waterGoal=Math.max(4,Math.min(16,S.waterGoal+d));document.getElementById('goalDisplay').textContent=S.waterGoal;persist();updateWaterUI();}
+function updateWaterUI(){
+  const pct=(S.waterCount/S.waterGoal*100).toFixed(1);
+  const b1=document.getElementById('waterBarHome'),b2=document.getElementById('waterBar2'),wb=document.getElementById('waterBig'),wbt=document.getElementById('waterBadgeHome'),wg=document.getElementById('waterGoalMsg'),wgt=document.getElementById('waterGoalText');
+  if(b1)b1.style.width=pct+'%';if(b2)b2.style.width=pct+'%';
+  if(wb)wb.textContent=S.waterCount;if(wbt)wbt.textContent=S.waterCount+'/'+S.waterGoal+' glasses';if(wgt)wgt.textContent=S.waterGoal;
+  if(wg)wg.textContent=S.waterCount>=S.waterGoal?'🎉 Daily goal achieved!':''+(S.waterGoal-S.waterCount)+' more glasses to go!';
+  renderWaterDrops();updateHeader();
+}
+function renderWaterDrops(){
+  const el=document.getElementById('waterDrops');if(!el)return;
+  el.innerHTML='';for(let i=0;i<S.waterGoal;i++){const b=document.createElement('button');b.className='wdrop '+(i<S.waterCount?'filled':'empty');b.textContent=i<S.waterCount?'💧':'○';b.onclick=()=>{S.waterCount=i+1;persist();updateWaterUI();};el.appendChild(b);}
+}
+
+// ════════════════════════════════════════════
+// MOOD
+// ════════════════════════════════════════════
+function setMood(btn,label,emoji){document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');document.getElementById('moodMsg').textContent='Feeling '+label+' today '+emoji;}
+
+// ════════════════════════════════════════════
+// WORKOUTS — CATEGORIES & SESSIONS
+// ════════════════════════════════════════════
+function renderWorkoutCategories(){
+  const el=document.getElementById('workoutGrid');if(!el)return;
+  el.innerHTML=WORKOUTS.map(w=>`<div class="wcat-card" style="background:${w.bg};border-color:${w.color}22;" onclick="showWorkoutSessions('${w.id}')"><span class="wcat-icon">${w.icon}</span><div class="wcat-name">${w.name}</div><div class="wcat-count">${w.sessions.length} sessions · videos included 🎥</div></div>`).join('');
+}
+function showWorkoutSessions(id){
+  const w=WORKOUTS.find(x=>x.id===id);
+  document.getElementById('workoutCategories').style.display='none';
+  const el=document.getElementById('workoutSessions');
+  el.style.display='block';
+  el.innerHTML=`<button class="back-btn" onclick="resetWorkoutView()">← All Workouts</button>
+    <div style="display:flex;align-items:center;gap:13px;margin-bottom:4px;">
+      <span style="font-size:40px;">${w.icon}</span>
+      <div><div class="section-title">${w.name}</div><div class="section-sub" style="margin-bottom:0;">Tap a session to watch & follow along</div></div>
+    </div>
+    <div style="margin-top:16px;">${w.sessions.map((s,i)=>`
+      <div class="session-row" onclick="openVideoModal('${w.id}',${i})">
+        <div class="session-ico" style="background:${w.color}22;">${w.icon}</div>
+        <div style="flex:1;">
+          <div class="serif fs16 fw700">${s.name}</div>
+          <div class="fs12 text-soft" style="margin-top:2px;line-height:1.4;">${s.desc.substring(0,70)}…</div>
+          <div class="session-badges">
+            <span class="badge badge-rose">⏱ ${s.dur} min</span>
+            <span class="badge badge-amber">🔥 ${s.cal} cal</span>
+            <span class="badge badge-mint">${s.level}</span>
+            <span class="badge badge-lav">▶ Video</span>
+          </div>
+        </div>
+        <span class="text-soft" style="font-size:18px;">›</span>
+      </div>`).join('')}
+    </div>`;
+}
+function resetWorkoutView(){
+  document.getElementById('workoutCategories').style.display='block';
+  document.getElementById('workoutSessions').style.display='none';
+  clearInterval(S.timerInterval);
+}
+
+// ════════════════════════════════════════════
+// VIDEO MODAL
+// ════════════════════════════════════════════
+function openVideoModal(catId, idx){
+  const w=WORKOUTS.find(x=>x.id===catId);
+  const s=w.sessions[idx];
+  S.activeSession={...s, catName:w.name, catIcon:w.icon, catColor:w.color};
+  S.timeLeft=s.dur*60; S.timerRunning=false;
+  clearInterval(S.timerInterval);
+  const modal=document.getElementById('videoModal');
+  modal.style.display='flex';
+  document.body.style.overflow='hidden';
+  renderVideoModal();
+}
+function closeVideoModal(){
+  const modal=document.getElementById('videoModal');
+  modal.style.display='none';
+  modal.innerHTML='';
+  document.body.style.overflow='';
+  clearInterval(S.timerInterval);
+  S.timerRunning=false;
+}
+function renderVideoModal(){
+  const s=S.activeSession;
+  const modal=document.getElementById('videoModal');
+  modal.innerHTML=`
+  <div class="video-modal-inner">
+    <div class="video-top-bar">
+      <button class="video-close-btn" onclick="closeVideoModal()">✕</button>
+      <div class="video-title-bar">${s.catIcon} ${s.name}</div>
+      <span class="badge badge-lav">${s.level}</span>
+    </div>
+    <div class="yt-frame-wrap">
+      <iframe src="https://www.youtube.com/embed/${s.yt}?rel=0&modestbranding=1&playsinline=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div class="video-info-scroll">
+      <div class="video-session-badges">
+        <span class="badge badge-rose">⏱ ${s.dur} min</span>
+        <span class="badge badge-amber">🔥 ${s.cal} cal</span>
+        <span class="badge badge-mint">${s.level}</span>
+        <span class="badge" style="background:#2a2a2a;color:#ccc;">${s.catName}</span>
+      </div>
+      <div class="video-desc">${s.desc}</div>
+      <div class="timer-section">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:#fff;margin-bottom:14px;text-align:center;">⏱ Session Timer</div>
+        <div class="timer-ring ${S.timerRunning?'pulsing':''}" id="vmTimerRing">
+          <div class="timer-time" id="vmTimerDisplay">${fmtTime(S.timeLeft)}</div>
+          <div class="timer-label" id="vmTimerLabel">${S.timerRunning?'In progress…':'Ready'}</div>
+        </div>
+        <div class="timer-btns">
+          <button class="btn btn-rose" id="vmToggleBtn" onclick="vmToggle()">${S.timerRunning?'⏸ Pause':'▶ Start'}</button>
+          <button class="btn btn-outline" style="color:#aaa;border-color:#555;" onclick="vmReset()">↺ Reset</button>
+        </div>
+        <div id="vmCompleteBanner"></div>
+      </div>
+      <div class="video-steps">
+        <div class="video-steps-title">📋 Session Breakdown</div>
+        ${s.steps.map((step,i)=>`<div class="video-step"><div class="step-num">${i+1}</div><div>${step}</div></div>`).join('')}
+      </div>
+      <div style="padding-bottom:20px;text-align:center;">
+        <button class="btn btn-rose fw" onclick="markComplete()">✅ Mark as Complete</button>
+      </div>
+    </div>
+  </div>`;
+}
+function vmToggle(){
+  S.timerRunning=!S.timerRunning;
+  if(S.timerRunning){
+    S.timerInterval=setInterval(()=>{
+      S.timeLeft--;
+      const d=document.getElementById('vmTimerDisplay');
+      if(d) d.textContent=fmtTime(S.timeLeft);
+      if(S.timeLeft<=0){clearInterval(S.timerInterval);S.timerRunning=false;onVmComplete();}
+    },1000);
+    const r=document.getElementById('vmTimerRing'),l=document.getElementById('vmTimerLabel'),b=document.getElementById('vmToggleBtn');
+    if(r)r.classList.add('pulsing');if(l)l.textContent='In progress…';if(b)b.textContent='⏸ Pause';
+  } else {
+    clearInterval(S.timerInterval);
+    const r=document.getElementById('vmTimerRing'),l=document.getElementById('vmTimerLabel'),b=document.getElementById('vmToggleBtn');
+    if(r)r.classList.remove('pulsing');if(l)l.textContent='Paused';if(b)b.textContent='▶ Resume';
+  }
+}
+function vmReset(){clearInterval(S.timerInterval);S.timerRunning=false;S.timeLeft=S.activeSession.dur*60;const d=document.getElementById('vmTimerDisplay'),r=document.getElementById('vmTimerRing'),l=document.getElementById('vmTimerLabel'),b=document.getElementById('vmToggleBtn');if(d)d.textContent=fmtTime(S.timeLeft);if(r)r.classList.remove('pulsing');if(l)l.textContent='Ready';if(b)b.textContent='▶ Start';}
+function onVmComplete(){
+  const r=document.getElementById('vmTimerRing'),l=document.getElementById('vmTimerLabel'),b=document.getElementById('vmToggleBtn');
+  if(r){r.classList.remove('pulsing');r.style.borderColor='#52C98A';}if(l)l.textContent='Done! 🎉';if(b){b.textContent='✅ Done!';b.disabled=true;}
+  markComplete(false);
+  const ban=document.getElementById('vmCompleteBanner');
+  if(ban)ban.innerHTML=`<div class="complete-banner mt12"><div style="font-family:'Cormorant Garamond',serif;font-size:20px;">Amazing work! 🌟</div><div style="font-size:13px;color:rgba(255,255,255,0.9);margin-top:5px;">You completed ${S.activeSession.name}!</div></div>`;
+}
+function markComplete(notify=true){
+  const name=S.activeSession.name;
+  if(!S.completed.includes(name)){S.completed.push(name);persist();updateHeader();updateCompletedUI();}
+  if(notify) alert('🎉 '+name+' marked complete! Great work!');
+}
+function fmtTime(s){const m=Math.floor(s/60),sec=s%60;return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');}
+
+// ════════════════════════════════════════════
+// COMPLETED
+// ════════════════════════════════════════════
+function updateCompletedUI(){
+  const card=document.getElementById('completedCard'),list=document.getElementById('completedList');if(!card||!list)return;
+  if(S.completed.length>0){card.style.display='block';list.innerHTML=S.completed.map((w,i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;${i<S.completed.length-1?'border-bottom:1px solid var(--border);':''}"><span style="color:var(--mint);font-size:17px;">✅</span><span class="fs13 text-mid">${w}</span></div>`).join('');}
+}
+
+// ════════════════════════════════════════════
+// NUTRITION
+// ════════════════════════════════════════════
+function renderMeals(){
+  const el=document.getElementById('mealPlanList');if(!el)return;
+  el.innerHTML=MEALS.map(m=>`<div class="meal-row"><div class="meal-ico">${m.icon}</div><div style="flex:1;"><div style="display:flex;justify-content:space-between;align-items:center;"><div class="serif fs16 fw700">${m.meal}</div><span class="fs11 text-soft">${m.time}</span></div><div class="fs13 text-mid" style="margin-top:2px;">${m.suggestion}</div><div style="margin-top:5px;display:flex;gap:6px;"><span class="badge badge-rose">🔥 ${m.calories} cal</span></div><div class="fs11 text-soft" style="margin-top:3px;font-style:italic;">${m.tip}</div></div></div>`).join('');
+  const rm=document.getElementById('mealReminders');if(rm)rm.innerHTML=MEALS.slice(0,3).map(m=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);"><div><span style="margin-right:7px;">${m.icon}</span><span class="fs13 text-mid">${m.meal}</span></div><span class="badge badge-amber">${m.time}</span></div>`).join('');
+  const nt=document.getElementById('nutritionTips');if(nt)nt.innerHTML=NUTRITION_TIPS.map(t=>`<div class="fs13 text-mid lh15" style="padding:7px 0;border-bottom:1px solid var(--border);">${t}</div>`).join('');
+}
+function renderWaterBenefits(){const el=document.getElementById('waterBenefits');if(!el)return;el.innerHTML=WATER_BENEFITS.map(([ic,t])=>`<div style="display:flex;gap:11px;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);"><span style="font-size:19px;">${ic}</span><span class="fs13 text-mid lh15">${t}</span></div>`).join('');}
+function renderWaterSchedule(){const el=document.getElementById('waterSchedule');if(!el)return;el.innerHTML=WATER_SCHED.map((t,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);"><span class="fs13 text-mid">Glass ${i+1}</span><span class="badge badge-teal">${t}</span></div>`).join('');}
+
+// ════════════════════════════════════════════
+// SLEEP
+// ════════════════════════════════════════════
+function setSleepQuality(n){document.getElementById('qualityDisplay').textContent='⭐'.repeat(n);}
+function saveSleep(){
+  const bed=document.getElementById('bedtimeInput').value,wake=document.getElementById('waketimeInput').value;
+  if(bed&&wake){const[bh,bm]=bed.split(':').map(Number),[wh,wm]=wake.split(':').map(Number);let d=wh*60+wm-(bh*60+bm);if(d<0)d+=1440;S.sleepHours=(d/60).toFixed(1);persist();updateHeader();document.getElementById('sleepTotal').textContent=Math.floor(d/60)+'h '+String(d%60).padStart(2,'0')+'m';document.getElementById('bedtimeDisplay').textContent=toAMPM(bh,bm);document.getElementById('waketimeDisplay').textContent=toAMPM(wh,wm);alert('Sleep logged! 🌙 '+S.sleepHours+' hours.');}
+}
+function toAMPM(h,m){const ap=h>=12?'PM':'AM',hh=h%12||12;return hh+':'+(m<10?'0':'')+m+' '+ap;}
+function renderSleepTips(){const el=document.getElementById('sleepTips');if(!el)return;el.innerHTML=SLEEP_TIPS.map(([ic,t])=>`<div style="display:flex;gap:11px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);"><span style="font-size:18px;">${ic}</span><span class="fs13 text-mid lh15">${t}</span></div>`).join('');}
+
+// ════════════════════════════════════════════
+// PROGRESS / BMI / ACHIEVEMENTS
+// ════════════════════════════════════════════
+function renderWeightChart(){
+  const el=document.getElementById('weightChart');if(!el)return;
+  const WK=['Wk1','Wk2','Wk3','Wk4','Wk5','Wk6'];
+  const mn=Math.min(...S.weights)-0.5,mx=Math.max(...S.weights)+0.5;
+  el.innerHTML=S.weights.map((w,i)=>{const p=Math.max(15,Math.round((1-(w-mn)/(mx-mn))*100));return`<div class="chart-col"><div class="chart-val">${w}</div><div class="chart-bar" style="height:${p}px;background:linear-gradient(180deg,var(--rose),var(--coral));"></div><div class="chart-xlabel">${WK[i]}</div></div>`;}).join('');
+  const lost=(S.weights[0]-S.weights[S.weights.length-1]).toFixed(1);
+  const s=document.getElementById('weightSummary');if(s)s.innerHTML=`<span style="font-size:26px;">📉</span><div><div class="serif fs16 fw700 text-mid">Total Lost: ${lost} kg</div><div class="fs12 text-soft mt8">${lost>0?'Amazing progress! Keep going 💪':'Log your weight to see your journey'}</div></div>`;
+}
+function saveWeight(){const v=parseFloat(document.getElementById('weightInput').value);if(!isNaN(v)&&v>0){S.weights=[...S.weights.slice(1),v];document.getElementById('weightInput').value='';persist();renderWeightChart();}}
+function calcBMI(){
+  const h=parseFloat(document.getElementById('heightInput').value)/100,w=parseFloat(document.getElementById('bmiWeightInput').value);if(!h||!w)return;
+  const bmi=(w/(h*h)).toFixed(1);let label,color,bg;
+  if(bmi<18.5){label='Underweight';color='#3BBFB8';bg='#E8FAFA';}else if(bmi<25){label='Normal weight ✓';color='#52C98A';bg='#EDFFF5';}else if(bmi<30){label='Overweight';color='#F5A623';bg='#FFF8EE';}else{label='Obese';color='#E8557A';bg='#FFF0F4';}
+  const el=document.getElementById('bmiResult');el.style.display='block';el.style.background=bg;
+  el.innerHTML=`<div class="bmi-number" style="color:${color};">${bmi}</div><div class="serif fs18 fw700" style="color:${color};margin-top:5px;">${label}</div><div class="bmi-scale mt12"><div style="background:#3BBFB8;"></div><div style="background:#52C98A;"></div><div style="background:#F5A623;"></div><div style="background:#E8557A;"></div></div><div class="flex" style="justify-content:space-between;"><span class="fs11 text-soft">Under</span><span class="fs11 text-soft">Normal</span><span class="fs11 text-soft">Over</span><span class="fs11 text-soft">Obese</span></div><div class="fs11 text-soft mt8">Healthy BMI range: 18.5 – 24.9</div>`;
+}
+function renderAchievements(){const el=document.getElementById('achievementsList');if(!el)return;el.innerHTML=ACHIEVEMENTS.map((a,i)=>`<div class="ach-row" style="opacity:${a.e?1:0.55};"><div class="ach-ico" style="background:${a.e?'linear-gradient(135deg,#F5A623,#E08200)':'#F5F5F5'};">${a.icon}</div><div style="flex:1;"><div class="serif fs16 fw700">${a.title}</div><div class="fs12 text-soft">${a.desc}</div>${!a.e?`<span class="badge badge-rose" style="margin-top:4px;">${a.p}</span>`:''}</div>${a.e?'<span style="color:#F5A623;font-size:20px;">★</span>':''}</div>`).join('');}
+
+// ════════════════════════════════════════════
+// CHALLENGES & SETTINGS
+// ════════════════════════════════════════════
+function renderChallenges(){const el=document.getElementById('challengesList');if(!el)return;el.innerHTML=CHALLENGES.map(c=>{const pct=Math.round(c.p/c.t*100);return`<div class="challenge-card" style="background:${c.color};"><div class="challenge-ico" style="background:${c.accent}22;">${c.icon}</div><div style="flex:1;"><div class="serif fs16 fw700">${c.name}</div><div class="fs12 text-soft">${c.desc}</div><div class="challenge-prog mt8"><div class="challenge-fill" style="width:${pct}%;background:${c.accent};"></div></div><div class="flex mt8" style="justify-content:space-between;"><span class="fs11 text-soft">${c.p}/${c.t} ${c.u}</span><span class="fs11 fw700" style="color:${c.accent};">${pct}%</span></div></div></div>`;}).join('');}
+function renderSettings(){
+  const el=document.getElementById('settingsToggles');if(!el)return;
+  const items=[{k:'waterR',l:'Water Reminders',s:'Hourly reminders to drink'},{k:'workoutR',l:'Workout Reminders',s:'Daily workout suggestions'},{k:'mealR',l:'Meal Reminders',s:'Timely meal notifications'},{k:'sleepR',l:'Sleep Reminders',s:'Bedtime nudge'}];
+  el.innerHTML=items.map(i=>`<div class="setting-row"><div><div style="font-size:14px;color:var(--text);">${i.l}</div><div style="font-size:11px;color:var(--text-soft);margin-top:2px;">${i.s}</div></div><button class="toggle ${S.settings[i.k]?'on':''}" id="tgl-${i.k}" onclick="toggleSetting('${i.k}')"></button></div>`).join('');
+}
+function toggleSetting(k){S.settings[k]=!S.settings[k];const el=document.getElementById('tgl-'+k);if(el)el.className='toggle '+(S.settings[k]?'on':'');persist();}
+function saveProfile(){const n=document.getElementById('profileName').value;if(n)document.getElementById('avatarEl').textContent=n[0].toUpperCase();alert('Profile saved! 🌸');}
+
+// ════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════
+function init(){
+  updateHeader();
+  document.getElementById('tipText').style.transition='opacity .3s';
+  rotateTip(); setInterval(rotateTip,7000);
+  updateWaterUI();
+  renderWorkoutCategories();
+  renderMeals();
+  renderWaterBenefits(); renderWaterSchedule();
+  renderWeightChart(); renderAchievements();
+  renderChallenges(); renderSleepTips(); renderSettings();
+  updateCompletedUI();
+}
+init();
+</script>
+</body>
+</html>
